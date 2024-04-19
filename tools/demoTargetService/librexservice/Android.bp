@@ -1,0 +1,30 @@
+cc_library_shared {
+    name: "librexplayerservice",
+    cflags: [
+        "-Werror",
+        "-Wno-error=deprecated-declarations",
+        "-Wall",
+        "-g",
+        //"-O0"
+        
+    ],
+    defaults:[
+        "android-wp-service-external-defaults",
+    ],
+    srcs: [
+        "RexPlayerService.cpp",
+        "IRexPlayerService.cpp",
+    ],
+    include_dirs: [
+        "external/framework-fuzz/include",
+        "external/framework-fuzz/tools/AFL",
+    ],
+    shared_libs: [
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libbinder",
+        "libstagefright_foundation",
+    ],
+    local_include_dirs: ["include"],
+}

@@ -1,0 +1,26 @@
+cc_binary {
+    name: "fuzz_demo_target",
+    srcs: [
+        "main.cpp",
+    ],
+    shared_libs: [
+        "libcutils",
+        "libutils",
+        "liblog",
+        "libbinder",
+        "librexplayerservice",
+    ],
+    defaults:[
+        "android-wp-service-external-defaults",
+    ],
+    cflags: [
+        "-Werror",
+        "-Wno-error=deprecated-declarations",
+        "-Wno-unused-parameter",
+        "-Wall",
+
+    ],
+    include_dirs: [
+        "external/framework-fuzz/include",
+    ],
+}

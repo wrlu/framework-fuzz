@@ -1,0 +1,166 @@
+/**
+ * Copyright (C) 2022 Singular Security Lab
+ * Author: XiaoLu
+ * Create: 2022-03
+ */
+
+// Use this cc_defaults for every fuzzing target
+cc_defaults {
+    name: "android-wp-service-external-defaults",
+
+    cflags: [
+        "-fsanitize-coverage=trace-pc-guard,no-prune",
+        //"-fsanitize-coverage-allowlist=external/framework-fuzz/tools/demoTargetService/librexservice/allowlist.txt",
+        //"-fsanitize=address", //aosp surfaceflinger would fail if with this option
+    ],
+    
+    ldflags:[
+        //"-fsanitize=address", //aosp surfaceflinger would fail if with this option
+    ],
+
+    include_dirs: [
+        "external/framework-fuzz",
+        "external/framework-fuzz/tools/AFL", 
+    ],
+
+    static_libs: [
+        "android-wp-service-static",
+        "afl-llvm-rt",
+        "libancillary",
+    ],
+    shared_libs: [
+        "libbase",
+        "libutils",
+        "libcutils",
+        "liblog",
+    ],
+
+}
+
+cc_defaults {
+    name: "android-wp-service-internal-defaults",
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-common",
+        "-g",
+        "-O0",
+    ],
+}
+
+cc_defaults {
+    name: "afl-llvm-rt-defaults",
+
+    cflags: [
+       "-fsanitize-coverage=trace-pc-guard,no-prune",
+    ],
+
+    static_libs: [
+        "afl-llvm-rt",
+    ]
+}
+
+cc_binary {
+    name: "android-wp-manager",
+
+    defaults: [
+        "android-wp-service-internal-defaults",
+        "afl-llvm-rt-defaults",
+    ],
+
+
+    srcs: [
+        "manager/Main.cpp",
+        "manager/BinderCaller.cpp",
+        "manager/BaseParamParser.cpp",
+        "manager/ParamParser.cpp",
+        "manager/Preference.cpp",
+        "manager/WpAshmemManager.cpp",
+        "manager/WpConfigLoader.cpp",
+        "manager/WpCrashDetector.cpp",
+        "manager/WpManager.cpp",
+        "manager/custom/TypedParamParser.cpp",
+        "manager/custom/HwKeystoreParamParser.cpp",
+        // "manager/hal/HwBinderCaller.cpp",
+        // "manager/hal/HwParamParser.cpp",
+        // "manager/hal/WpHwManager.cpp",
+        "manager/sa/SaCaller.cpp",
+        "manager/sa/WpSaAshmemManager.cpp",
+        "manager/sa/WpSaCrashDetector.cpp",
+        "manager/sa/WpSaManager.cpp",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libutils",
+        "libcutils",
+        "liblog",
+        "libbinder",
+        "libhidlbase",
+    ],
+
+    static_libs: [
+        "libhwbinder-impl-internal",
+    ],
+
+    include_dirs: [
+        "system/libhwbinder/include",
+        "external/framework-fuzz/tools/AFL",        
+    ],
+}
+
+cc_library_static {
+    name: "android-wp-service-static",
+
+
+    vendor_available: true,
+    host_supported: true,
+    
+    defaults: [
+        "android-wp-service-internal-defaults",
+    ],
+
+    include_dirs: [
+        "external/framework-fuzz/tools/AFL",
+    ],
+
+    srcs: [
+        "service/WpService.cpp",
+        //"service/WpServiceCov.c",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libutils",
+        "libcutils",
+        "liblog",
+        "libbinder",
+    ],
+}
+
+cc_binary {
+    name: "android-wp-service",
+
+    defaults: [
+        "android-wp-service-internal-defaults",
+        "android-wp-service-external-defaults",
+    ],
+
+    srcs: [
+        "service/Main.cpp",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libutils",
+        "libcutils",
+        "liblog",
+        "libbinder",
+    ],
+}
+
+subdirs = [
+    "tools/demoTargetService",
+]

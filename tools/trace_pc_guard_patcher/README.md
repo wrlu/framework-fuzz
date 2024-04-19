@@ -1,0 +1,1 @@
+This file is used to patch trace_pc_guard functions in .so files, more details can be referenced to ##分析路径覆盖反馈不正确的问题 in framework-fuzz/tools/demoTargetService/README.md

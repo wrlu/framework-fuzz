@@ -1,0 +1,31 @@
+cc_binary {
+    name: "rexplayerserver",
+    srcs: [
+        "main_rexplayerserver.cpp",
+    ],
+    //defaults:[
+    //    "android-wp-service-external-defaults", //注意虽然ontransact在librexservice.so中，但是这里还是要加这个，主要是要加trace_pc_guard，否则路径反馈不正常，目前暂不清楚为什么。可以通过观察加入此选项与不加时候的afl path记录情况进行比较
+    //],
+    shared_libs: [
+        "libcutils",
+        "libutils",
+        "liblog",
+        "libbinder",
+        "librexplayerservice",
+    ],
+    cflags: [
+        "-Werror",
+        "-Wno-error=deprecated-declarations",
+        "-Wno-unused-parameter",
+        "-Wall",
+        "-g",
+        "-O0",
+    ],
+    include_dirs: [
+        "external/framework-fuzz/tools/demoTargetService/librexservice/include",
+        "external/framework-fuzz/include",
+        "external/framework-fuzz/tools/AFL",
+    ],
+    
+
+}
